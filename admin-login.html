@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Soni Jewellers</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page" data-login-role="admin">
+    <main class="auth-container">
+        <div class="auth-header">
+            <p class="auth-eyebrow">Owner Access</p>
+            <h1>Admin Login</h1>
+            <p class="auth-subtitle">Sign in with an approved admin email to manage products, stock, pricing, and sales terms.</p>
+        </div>
+
+        <div class="auth-grid">
+            <section class="auth-card">
+                <h2>Admin Email Login</h2>
+                <form id="email-auth-form" class="auth-form">
+                    <label for="email">Admin Email</label>
+                    <input type="email" id="email" class="auth-input" placeholder="Enter admin email" autocomplete="email" required>
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="auth-input" placeholder="Enter password" autocomplete="current-password" required>
+
+                    <button id="login-email-btn" class="btn btn-primary auth-btn" type="button">Log In as Admin</button>
+                    <p id="auth-message" class="auth-message" role="status"></p>
+                </form>
+            </section>
+
+            <section class="auth-card">
+                <h2>Admin Google Sign-In</h2>
+                <p class="auth-meta">Only approved admin emails can enter the dashboard.</p>
+                <button id="google-login-btn" class="btn btn-primary auth-btn" type="button">Sign in with Google</button>
+            </section>
+        </div>
+
+        <div class="auth-footer-actions">
+            <a href="customer-login.html">Customer login</a>
+            <a href="index.html">Back to website</a>
+        </div>
+    </main>
+
+    <script type="module" src="js/login.js"></script>
+</body>
+</html>

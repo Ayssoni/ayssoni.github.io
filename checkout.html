@@ -26,6 +26,7 @@
                 <li><a href="shop.html">Shop</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html" data-auth-link>Login</a></li>
             </ul>
 
             <div class="nav-icons">
@@ -145,50 +146,8 @@
     <script src="js/cart.js"></script>
     <script src="js/main.js"></script>
     <script src="js/live-rates.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const cart = getCart();
-            if (cart.length === 0) {
-                window.location.href = 'shop.html';
-                return;
-            }
+    <script type="module" src="js/session-nav.js"></script>
+    <script type="module" src="js/checkout.js"></script>
 
-            let subtotal = 0;
-            let html = '<div style="margin-bottom: 20px;">';
-            
-            cart.forEach(item => {
-                subtotal += item.price * item.quantity;
-                html += `
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 10px; font-size: 0.9rem;">
-                        <span>${item.name} x ${item.quantity}</span>
-                        <span>${formatPrice(item.price * item.quantity)}</span>
-                    </div>
-                `;
-            });
-            html += '</div>';
-
-            const tax = subtotal * 0.08;
-            const total = subtotal + tax;
-
-            html += `
-                <div class="summary-row"><span>Subtotal</span><span>${formatPrice(subtotal)}</span></div>
-                <div class="summary-row"><span>Tax (8%)</span><span>${formatPrice(tax)}</span></div>
-                <div class="summary-total"><span>Total</span><span style="color:var(--color-primary);">${formatPrice(total)}</span></div>
-            `;
-
-            document.getElementById('checkout-summary-content').innerHTML = html;
-        });
-
-        function handleCheckout(e) {
-            e.preventDefault();
-            
-            // Show modal
-            document.getElementById('success-modal').style.display = 'flex';
-            
-            // Clear cart
-            localStorage.removeItem('jewellery_cart');
-            updateCartBadge();
-        }
-    </script>
 </body>
 </html>

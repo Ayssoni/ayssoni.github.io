@@ -30,21 +30,24 @@ function applyProductImageFallbacks(scope = document) {
 function createProductCard(product) {
     const badgeHtml = product.badge ? `<div class="product-badge">${product.badge}</div>` : '';
     const fallbackImage = getProductFallbackImage(product.category);
+    const productId = String(product.id);
+    const productIdForHandler = productId.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const productHref = `product.html?id=${encodeURIComponent(productId)}`;
     
     return `
         <div class="product-card" data-category="${product.category}" data-price="${product.price}">
             ${badgeHtml}
             <div class="product-img">
-                <a href="product.html?id=${product.id}">
+                <a href="${productHref}">
                     <img src="${product.image}" alt="${product.name}" loading="lazy" data-fallback="${fallbackImage}">
                 </a>
                 <div class="product-action">
-                    <button class="btn btn-primary" onclick="addToCart(${product.id})">Add to Cart</button>
+                    <button class="btn btn-primary" onclick="addToCart('${productIdForHandler}')">Add to Cart</button>
                 </div>
             </div>
             <div class="product-info">
                 <div class="product-category">${product.category}</div>
-                <h3 class="product-title"><a href="product.html?id=${product.id}">${product.name}</a></h3>
+                <h3 class="product-title"><a href="${productHref}">${product.name}</a></h3>
                 <div class="product-price">${formatPrice(product.price)}</div>
             </div>
         </div>
@@ -77,56 +80,48 @@ function renderHomeProducts() {
 }
 
 // Shop Page Filtering Logic
+let shopFiltersBound = false;
+let applyShopFilters = null;
+
 function initShopFilters() {
     const shopContainer = document.getElementById('shop-products');
-    if (!shopContainer) return; // Not on shop page
+    if (!shopContainer) return;
 
     const searchInput = document.getElementById('search-input');
     const categoryCheckboxes = document.querySelectorAll('.category-filter');
     const priceSlider = document.getElementById('price-slider');
     const priceDisplay = document.getElementById('price-display');
 
-    // Initial Render
-    renderProducts(products, 'shop-products');
-
     function filterProducts() {
-        // 1. Search filter
-        const searchTerm = searchInput.value.toLowerCase();
-        
-        // 2. Category filter
+        const searchTerm = (searchInput?.value || '').toLowerCase();
         const checkedCategories = Array.from(categoryCheckboxes)
             .filter(cb => cb.checked)
             .map(cb => cb.value);
-            
-        // 3. Price filter
-        const maxPrice = parseInt(priceSlider.value);
+        const maxPrice = parseInt(priceSlider?.value || '999999999', 10);
 
         const filtered = products.filter(p => {
-            const matchesSearch = p.name.toLowerCase().includes(searchTerm);
+            const matchesSearch = (p.name || '').toLowerCase().includes(searchTerm);
             const matchesCategory = checkedCategories.length === 0 || checkedCategories.includes(p.category);
-            const matchesPrice = p.price <= maxPrice;
-            
+            const matchesPrice = Number(p.price) <= maxPrice;
             return matchesSearch && matchesCategory && matchesPrice;
         });
 
         renderProducts(filtered, 'shop-products');
     }
 
-    // Event Listeners
-    if (searchInput) {
-        searchInput.addEventListener('input', filterProducts);
-    }
-    
-    categoryCheckboxes.forEach(cb => {
-        cb.addEventListener('change', filterProducts);
-    });
+    applyShopFilters = filterProducts;
 
-    if (priceSlider) {
-        priceSlider.addEventListener('input', (e) => {
-            priceDisplay.textContent = `₹0 - ₹${parseInt(e.target.value).toLocaleString('en-IN')}`;
+    if (!shopFiltersBound) {
+        searchInput?.addEventListener('input', filterProducts);
+        categoryCheckboxes.forEach(cb => cb.addEventListener('change', filterProducts));
+        priceSlider?.addEventListener('input', (e) => {
+            priceDisplay.textContent = `₹0 - ₹${parseInt(e.target.value, 10).toLocaleString('en-IN')}`;
             filterProducts();
         });
+        shopFiltersBound = true;
     }
+
+    filterProducts();
 }
 
 // Product Detail Page Logic
@@ -135,15 +130,14 @@ function initProductDetail() {
     if (!detailContainer) return; // Not on product page
 
     const urlParams = new URLSearchParams(window.location.search);
-    const productId = parseInt(urlParams.get('id'));
+    const productId = urlParams.get('id');
 
-    // If no ID or invalid ID, redirect to shop
-    if (!productId || isNaN(productId)) {
+    if (!productId) {
         window.location.href = 'shop.html';
         return;
     }
 
-    const product = products.find(p => p.id === productId);
+    const product = products.find(p => String(p.id) === String(productId));
 
     if (!product) {
         detailContainer.innerHTML = '<h2>Product not found</h2>';
@@ -171,7 +165,7 @@ function initProductDetail() {
                     <input type="number" id="detail-qty" class="qty-input" value="1" min="1" readonly>
                     <button class="qty-btn" onclick="incrementDetailQty()">+</button>
                 </div>
-                <button class="btn btn-primary" onclick="addDetailToCart(${product.id})">Add to Cart</button>
+                <button class="btn btn-primary" onclick="addDetailToCart('${String(product.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}')">Add to Cart</button>
             </div>
             
             <div class="pd-meta">
@@ -183,7 +177,7 @@ function initProductDetail() {
     applyProductImageFallbacks(detailContainer);
 
     // Render Related Products (same category, excluding current)
-    const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+    const related = products.filter(p => p.category === product.category && String(p.id) !== String(product.id)).slice(0, 4);
     renderProducts(related, 'related-products');
 }
 
@@ -204,9 +198,12 @@ window.addDetailToCart = function(productId) {
     addToCart(productId, qty);
 };
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
+function initializeProductViews() {
     renderHomeProducts();
     initShopFilters();
     initProductDetail();
-});
+}
+
+// Initialize on page load and rerender when Firebase products arrive.
+document.addEventListener('DOMContentLoaded', initializeProductViews);
+window.addEventListener('products-ready', initializeProductViews);

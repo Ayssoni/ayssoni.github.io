@@ -3,36 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | Soni Jewellers</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/admin.css">
 </head>
-<body>
-    <div class="admin-container">
-        <nav class="admin-nav">
-            <h2>Admin Dashboard</h2>
-            <button id="logout-btn">Logout</button>
-        </nav>
-
-        <section class="admin-stats">
-            <h3>Website Overview</h3>
-            <div class="stat-card">
-                <h4>Total Users</h4>
-                <p id="total-users">Loading...</p>
+<body class="admin-page">
+    <main class="admin-shell">
+        <header class="admin-topbar">
+            <a href="index.html" class="admin-brand">SONI JEWELLERS<span>.</span></a>
+            <div class="admin-session">
+                <span id="admin-user">Checking access...</span>
+                <button id="logout-btn" class="btn btn-outline" type="button">Logout</button>
             </div>
-            <div class="stat-card">
-                <h4>Active Sessions</h4>
-                <p id="active-sessions">Loading...</p>
+        </header>
+
+        <section id="admin-guard" class="admin-status">Checking Firebase admin access...</section>
+
+        <section id="admin-dashboard" class="admin-dashboard" hidden>
+            <div class="admin-summary-grid">
+                <article class="stat-card">
+                    <span>Total Products</span>
+                    <strong id="total-products">0</strong>
+                </article>
+                <article class="stat-card">
+                    <span>Active Products</span>
+                    <strong id="active-products">0</strong>
+                </article>
+                <article class="stat-card">
+                    <span>Low Stock</span>
+                    <strong id="low-stock-products">0</strong>
+                </article>
             </div>
-        </section>
 
-        <section class="admin-actions">
-            <h3>Actions</h3>
-            <button class="action-btn" onclick="manageUsers()">Manage Users</button>
-            <button class="action-btn" onclick="editContent()">Edit Website Content</button>
-        </section>
-    </div>
+            <section class="admin-panel">
+                <div class="admin-panel-heading">
+                    <div>
+                        <p class="admin-eyebrow">Product Manager</p>
+                        <h1>Add or Edit Jewellery</h1>
+                    </div>
+                    <button id="reset-form-btn" class="btn btn-outline" type="button">New Product</button>
+                </div>
 
-    <script src="js/admin.js"></script>
+                <form id="product-form" class="admin-form">
+                    <input type="hidden" id="product-id">
+
+                    <div class="admin-form-grid">
+                        <label>Product Name
+                            <input id="product-name" type="text" required>
+                        </label>
+                        <label>Category
+                            <select id="product-category" required>
+                                <option value="Rings">Rings</option>
+                                <option value="Necklaces">Necklaces</option>
+                                <option value="Earrings">Earrings</option>
+                                <option value="Bracelets">Bracelets</option>
+                            </select>
+                        </label>
+                        <label>Price (INR)
+                            <input id="product-price" type="number" min="0" step="1" required>
+                        </label>
+                        <label>Stock Quantity
+                            <input id="product-stock" type="number" min="0" step="1" value="1">
+                        </label>
+                        <label>Badge
+                            <input id="product-badge" type="text" placeholder="Best Seller, New Arrival, Luxury">
+                        </label>
+                        <label>Image URL
+                            <input id="product-image" type="url" placeholder="https://..." required>
+                        </label>
+                        <label>Metal
+                            <input id="product-metal" type="text" placeholder="Gold, Silver, Diamond">
+                        </label>
+                        <label>Purity
+                            <input id="product-purity" type="text" placeholder="18K, 22K, 24K">
+                        </label>
+                        <label>Weight (grams)
+                            <input id="product-weight" type="number" min="0" step="0.01">
+                        </label>
+                        <label>Making Charges (%)
+                            <input id="product-making" type="number" min="0" step="0.01">
+                        </label>
+                        <label>Discount (%)
+                            <input id="product-discount" type="number" min="0" max="100" step="0.01">
+                        </label>
+                        <label>Installment Months
+                            <input id="product-installments" type="number" min="0" step="1" placeholder="0 if not available">
+                        </label>
+                        <label>Annual Interest (%)
+                            <input id="product-interest" type="number" min="0" step="0.01" placeholder="0 if not available">
+                        </label>
+                        <label class="admin-check">
+                            <input id="product-active" type="checkbox" checked>
+                            Show product on website
+                        </label>
+                    </div>
+
+                    <label>Description
+                        <textarea id="product-description" rows="4" required></textarea>
+                    </label>
+
+                    <div class="admin-form-actions">
+                        <button id="save-product-btn" class="btn btn-primary" type="submit">Save Product</button>
+                        <p id="admin-message" class="admin-message" role="status"></p>
+                    </div>
+                </form>
+            </section>
+
+            <section class="admin-panel">
+                <div class="admin-panel-heading">
+                    <div>
+                        <p class="admin-eyebrow">Live Website Data</p>
+                        <h2>Products in Firebase</h2>
+                    </div>
+                    <button id="refresh-products-btn" class="btn btn-outline" type="button">Refresh</button>
+                </div>
+                <div id="admin-product-list" class="admin-product-list">Loading products...</div>
+            </section>
+            <section class="admin-panel">
+                <div class="admin-panel-heading">
+                    <div>
+                        <p class="admin-eyebrow">Customer Orders</p>
+                        <h2>Recent Orders</h2>
+                    </div>
+                    <button id="refresh-orders-btn" class="btn btn-outline" type="button">Refresh Orders</button>
+                </div>
+                <div id="admin-order-list" class="admin-product-list">Loading orders...</div>
+            </section>
+
+        </section>
+    </main>
+
+    <script type="module" src="js/admin.js"></script>
 </body>
 </html>

@@ -3,114 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Choose Login | Soni Jewellers</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/auth.css">
-    <!-- Firebase and Auth Config -->
-    <script src="js/firebase-config.js" type="module"></script>
-    <script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 <body class="auth-page">
-    <div class="auth-container">
-        <div class="auth-header">
+    <main class="auth-container auth-choice-container">
+        <div class="auth-header auth-centered">
             <p class="auth-eyebrow">Soni Jewellers</p>
-            <h1>Welcome back</h1>
-            <p class="auth-subtitle">Sign in to manage orders, track favorites, and checkout faster.</p>
+            <h1>Choose Your Login</h1>
+            <p class="auth-subtitle">Use the customer area for shopping, or the admin area to manage products and sales settings.</p>
         </div>
 
-        <div class="auth-grid">
-            <!-- Google Login -->
-            <section class="auth-card">
-                <h2>Google Sign-In</h2>
-                <p class="auth-meta">Use your Google account for instant access.</p>
-                <button id="google-login-btn" class="btn btn-primary auth-btn" type="button">Sign in with Google</button>
-            </section>
+        <div class="auth-grid auth-choice-grid">
+            <a href="customer-login.html" class="auth-card auth-choice-card">
+                <span class="auth-choice-icon">Customer</span>
+                <h2>Customer Login</h2>
+                <p class="auth-meta">Create an account, sign in, shop jewellery, and keep your details ready for checkout.</p>
+            </a>
 
-            <!-- Phone Login -->
-            <section class="auth-card">
-                <h2>Phone Number Login</h2>
-                <p class="auth-meta">We’ll send a one-time password to verify.</p>
-                <div id="recaptcha-container"></div>
-                <div class="phone-input-group">
-                    <input type="text" id="country-code" class="auth-input auth-input-code" placeholder="+91" value="+91" inputmode="tel" autocomplete="tel-country-code">
-                    <input type="tel" id="phone-number" class="auth-input" placeholder="Enter your 10-digit phone number" inputmode="tel" autocomplete="tel-national">
-                </div>
-                <button id="send-otp-btn" class="btn btn-outline auth-btn" type="button">Send OTP</button>
-                <input type="text" id="otp-code" class="auth-input" placeholder="Enter OTP" inputmode="numeric" autocomplete="one-time-code">
-                <button id="verify-otp-btn" class="btn btn-primary auth-btn" type="button">Verify OTP</button>
-            </section>
-
-            <!-- Email/Password Login -->
-            <section class="auth-card">
-                <h2>Email &amp; Password</h2>
-                <form id="email-auth-form" class="auth-form">
-                    <label for="full-name">Full Name</label>
-                    <input type="text" id="full-name" class="auth-input" placeholder="Enter your full name" autocomplete="name">
-
-                    <label for="email">Email</label>
-                    <input type="email" id="email" class="auth-input" placeholder="Enter your email" autocomplete="email" required>
-                    
-                    <label for="password">Password</label>
-                    <input type="password" id="password" class="auth-input" placeholder="Enter your password" autocomplete="current-password" required>
-                    
-                    <div class="form-buttons">
-                        <button id="login-email-btn" class="btn btn-outline auth-btn" type="button">Log In</button>
-                        <button id="signup-email-btn" class="btn btn-primary auth-btn" type="button">Sign Up</button>
-                    </div>
-                    <p class="auth-note">Full name is required only for sign up.</p>
-                </form>
-            </section>
+            <a href="admin-login.html" class="auth-card auth-choice-card">
+                <span class="auth-choice-icon">Admin</span>
+                <h2>Admin Login</h2>
+                <p class="auth-meta">Owner access for product details, price, stock, selling options, and interest settings.</p>
+            </a>
         </div>
-    </div>
 
-    <script type="module">
-        // Import authentication logic
-        import { 
-            loginWithGoogle 
-        } from "./js/auth/google-auth.js";
-        import { 
-            setupRecaptcha, 
-            sendOTP, 
-            verifyOTP 
-        } from "./js/auth/phone-auth.js";
-        import { 
-            loginWithEmail, 
-            signUpWithEmail 
-        } from "./js/auth/email-auth.js";
-
-        // Google Login
-        document.getElementById("google-login-btn")
-            .addEventListener("click", loginWithGoogle);
-
-        // Phone Login
-        setupRecaptcha();
-        document.getElementById("send-otp-btn").addEventListener("click", () => {
-            const countryCode = document.getElementById("country-code").value || "+91";
-            const phoneNumber = document.getElementById("phone-number").value;
-            const fullPhoneNumber = countryCode + phoneNumber;
-            sendOTP(fullPhoneNumber);
-        });
-
-        document.getElementById("verify-otp-btn").addEventListener("click", () => {
-            const otpCode = document.getElementById("otp-code").value;
-            verifyOTP(otpCode);
-        });
-
-        // Email Login
-        document.getElementById("signup-email-btn").addEventListener("click", (e) => {
-            e.preventDefault();
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const name = document.getElementById("full-name").value.trim();
-            signUpWithEmail(email, password, name);
-        });
-
-        document.getElementById("login-email-btn").addEventListener("click", (e) => {
-            e.preventDefault();
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            loginWithEmail(email, password);
-        });
-    </script>
+        <a href="index.html" class="auth-back-link">Back to website</a>
+    </main>
 </body>
 </html>

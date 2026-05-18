@@ -124,3 +124,64 @@
         text-align: center;
     }
 }
+
+
+.auth-centered {
+    text-align: center;
+}
+
+.auth-choice-container {
+    max-width: 860px;
+}
+
+.auth-choice-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.auth-choice-card {
+    color: inherit;
+    min-height: 210px;
+    align-content: start;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.auth-choice-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(212, 175, 55, 0.65);
+    box-shadow: var(--shadow-hover);
+}
+
+.auth-choice-icon {
+    width: fit-content;
+    padding: 6px 10px;
+    background: var(--color-primary);
+    color: var(--color-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.auth-footer-actions,
+.auth-back-link {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    color: var(--color-text-light);
+    font-weight: 500;
+}
+
+.auth-footer-actions a:hover,
+.auth-back-link:hover {
+    color: var(--color-secondary);
+}
+
+.auth-message {
+    min-height: 20px;
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+}
+
+.auth-message.is-error {
+    color: #b00020;
+}

@@ -11,13 +11,13 @@ function saveCart(cart) {
 
 function addToCart(productId, quantity = 1) {
     // Find product details from products.js (assuming it's loaded before this script)
-    const product = products.find(p => p.id === productId);
+    const product = products.find(p => String(p.id) === String(productId));
     if (!product) return;
 
     let cart = getCart();
     
     // Check if item already in cart
-    const existingItemIndex = cart.findIndex(item => item.id === productId);
+    const existingItemIndex = cart.findIndex(item => String(item.id) === String(productId));
     
     if (existingItemIndex > -1) {
         cart[existingItemIndex].quantity += quantity;
@@ -37,7 +37,7 @@ function addToCart(productId, quantity = 1) {
 
 function removeFromCart(productId) {
     let cart = getCart();
-    cart = cart.filter(item => item.id !== productId);
+    cart = cart.filter(item => String(item.id) !== String(productId));
     saveCart(cart);
     
     // If we are on cart page, re-render
@@ -50,7 +50,7 @@ function updateQuantity(productId, newQuantity) {
     if (newQuantity < 1) return;
     
     let cart = getCart();
-    const itemIndex = cart.findIndex(item => item.id === productId);
+    const itemIndex = cart.findIndex(item => String(item.id) === String(productId));
     
     if (itemIndex > -1) {
         cart[itemIndex].quantity = newQuantity;
@@ -111,14 +111,14 @@ function renderCartPage() {
                 <td>${formatPrice(item.price)}</td>
                 <td>
                     <div class="qty-selector" style="width: fit-content;">
-                        <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                        <button class="qty-btn" onclick="updateQuantity('${String(item.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}', ${item.quantity - 1})">-</button>
                         <input type="number" class="qty-input" value="${item.quantity}" readonly>
-                        <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                        <button class="qty-btn" onclick="updateQuantity('${String(item.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}', ${item.quantity + 1})">+</button>
                     </div>
                 </td>
                 <td style="font-weight: 600;">${formatPrice(itemTotal)}</td>
                 <td>
-                    <button class="remove-btn" onclick="removeFromCart(${item.id})">🗑️</button>
+                    <button class="remove-btn" onclick="removeFromCart('${String(item.id).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}')">🗑️</button>
                 </td>
             </tr>
         `;
